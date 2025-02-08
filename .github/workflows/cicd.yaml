@@ -1,68 +1,103 @@
-name: Build, Analyze, Scan
+# webapp/webapp/settings.py
 
-on:
-  push:
-    branches:
-      - main
+"""
+Django settings for webapp project.
+"""
 
-jobs:
-  build_analyze_scan:
-    name: Build, Analyze, and Scan
-    runs-on: ubuntu-latest
-    steps:
-      # Checkout the repository code.
-      - name: Checkout Code
-        uses: actions/checkout@v3
+# Removed unused import of os since it was not needed.
+# import os
 
-      # Set up Python 3.11.
-      - name: Set up Python 3.11
-        uses: actions/setup-python@v4
-        with:
-          python-version: '3.11'
+DEBUG = True
 
-      # Install Python dependencies.
-      - name: Install Dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install -r requirements.txt
+ALLOWED_HOSTS = []
 
-      # Note: Docker is pre-installed on ubuntu-latest, so no need to install it again.
-      # If you really need to install Docker, consider removing the conflicting package:
-      # sudo apt-get remove -y containerd || true
+INSTALLED_APPS = [
+    'django.contrib.admin',
+    'django.contrib.auth',
+    # Add your other apps here
+]
 
-      # Install Docker Compose.
-      - name: Install Docker Compose
-        run: |
-          sudo curl -L "https://github.com/docker/compose/releases/download/v2.20.0/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
-          sudo chmod +x /usr/local/bin/docker-compose
-          docker-compose --version
+MIDDLEWARE = [
+    'django.middleware.security.SecurityMiddleware',
+    'django.contrib.sessions.middleware.SessionMiddleware',
+    # Add your other middleware here
+]
 
-      # (Optional) Run static code analysis with flake8.
-      - name: Run Code Analysis
-        run: |
-          pip install flake8
-          flake8 .
+ROOT_URLCONF = 'webapp.urls'
 
-      # (Optional) Run a security scan with bandit.
-      - name: Run Security Scan
-        run: |
-          pip install bandit
-          bandit -r .
+TEMPLATES = [
+    {
+        'BACKEND': 'django.template.backends.django.DjangoTemplates',
+        'DIRS': [],
+        'APP_DIRS': True,
+        'OPTIONS': {
+            'context_processors': [
+                'django.template.context_processors.debug',
+                'django.template.context_processors.request',
+                # Add additional context processors if needed
+            ],
+        },
+    },
+]
 
-      # Build your Docker image using Docker Compose.
-      - name: Build Docker Image
-        run: docker-compose -f docker-compose.yaml build
+WSGI_APPLICATION = 'webapp.wsgi.application'
 
-      # Tag the Docker image.
-      - name: Tag Docker Image
-        run: docker tag webapp:latest adityakapole/webapp:latest
+# Database configuration
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': 'db.sqlite3',
+    }
+}
 
-      # Log in to Docker Hub securely.
-      - name: Docker Login
-        run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
+# Password validation
+AUTH_PASSWORD_VALIDATORS = [
+    {
+        'NAME': (
+            'django.contrib.auth.password_validation.UserAttributeSimilarityValidator'
+        ),
+    },
+    {
+        'NAME': (
+            'django.contrib.auth.password_validation.MinimumLengthValidator'
+        ),
+    },
+    {
+        'NAME': (
+            'django.contrib.auth.password_validation.CommonPasswordValidator'
+        ),
+    },
+    {
+        'NAME': (
+            'django.contrib.auth.password_validation.NumericPasswordValidator'
+        ),
+    },
+]
 
-      # Push the Docker image.
-      - name: Docker Push
-        run: docker push adityakapole/webapp:latest
-        env:
-          DOCKER_CLI_ACI: 1
+# Internationalization settings
+LANGUAGE_CODE = 'en-us'
+TIME_ZONE = 'UTC'
+USE_I18N = True
+USE_TZ = True
+
+# Static files settings
+STATIC_URL = '/static/'
+
+# Example dictionary with correct spacing around colons
+EXAMPLE_SETTINGS = {
+    'option1': True,
+    'option2': False,
+    'option3': None,
+    'option4': 'A string value'
+}
+
+# Long string settings broken into multiple lines to meet the 79-character limit.
+LONG_TEXT = (
+    "This is a long text that is intentionally broken into multiple lines "
+    "to comply with PEP8 guidelines on maximum line length."
+)
+
+ANOTHER_LONG_TEXT = (
+    "Another example of a long string that has been split properly to avoid "
+    "line length issues in the settings file."
+)
