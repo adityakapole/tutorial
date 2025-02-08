@@ -1,7 +1,7 @@
-aiml
+mlops
 ==============================
 
-this is related to mlops
+this is for mlops
 
 Project Organization
 ------------

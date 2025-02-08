@@ -1,0 +1,16 @@
+artifact_uri: mlflow-artifacts:/108571480460114446/20b7a985b51346e8a8762673e71b4673/artifacts
+deleted_time: 1738910145784
+end_time: 1738908901354
+entry_point_name: ''
+experiment_id: '108571480460114446'
+lifecycle_stage: deleted
+run_id: 20b7a985b51346e8a8762673e71b4673
+run_name: mlops
+run_uuid: 20b7a985b51346e8a8762673e71b4673
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1738908895681
+status: 4
+tags: []
+user_id: Xerxez Solutions

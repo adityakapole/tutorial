@@ -1,5 +1,5 @@
-base: 
-  project: mlops
+base:
+  project: aissm_mlops
   random_state: 20
   target_col: charges
 
@@ -7,21 +7,28 @@ data_source:
   raw_dataset_csv: data/raw/insurance.csv
 
 load_data:
-  clean_dataset_csv: data/processed/insurance_cleaned.csv
+  clean_data: data/processed/insurance_aiss.csv
 
 split_data:
-  train_path: data/processed_train/train.csv
-  test_path: data/processed_test/test.csv
+  train_path: data/processed/train_aissm.csv
+  test_path: data/processed/test_aissm.csv
   test_size: 0.2
 
 estimators:
   ElasticNet:
-    params: 
+    params:
       alpha: 0.9
-      l1_ratio: 0.6
+      l1_ratio: 0.2
 
 model_path: models/models.joblib
 
-reports:
-  params: reports/params.json
-  scores: reports/scores.json
+# reports:
+#   params: reports/params.json
+#   score: reports/scores.json
+
+mlflow_config:
+  artifatcs_dir: artifacts
+  experiment_name: insurance_aissm
+  run_name: mlops
+  registered_model_name: ElasticNet
+  remote_server_uri: http://127.0.0.1:5000
