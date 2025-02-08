@@ -10,65 +10,59 @@ jobs:
     name: Build, Analyze, and Scan
     runs-on: ubuntu-latest
     steps:
-      # Checkout your repository
+      # Checkout the repository code.
       - name: Checkout Code
         uses: actions/checkout@v3
 
-      # Set up Python 3.11
+      # Set up Python 3.11.
       - name: Set up Python 3.11
         uses: actions/setup-python@v4
         with:
           python-version: '3.11'
 
-      # Install Python dependencies
-      - name: Install Python Dependencies
+      # Install Python dependencies.
+      - name: Install Dependencies
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      # Install Docker and Docker Compose
-      - name: Install Docker and Docker Compose
+      # Note: Docker is pre-installed on ubuntu-latest, so no need to install it again.
+      # If you really need to install Docker, consider removing the conflicting package:
+      # sudo apt-get remove -y containerd || true
+
+      # Install Docker Compose.
+      - name: Install Docker Compose
         run: |
-          sudo apt-get update
-          sudo apt-get install -y docker.io
-          sudo systemctl start docker
-          sudo systemctl enable docker
           sudo curl -L "https://github.com/docker/compose/releases/download/v2.20.0/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
           sudo chmod +x /usr/local/bin/docker-compose
           docker-compose --version
 
-      # (Optional) Run static code analysis with a linter (e.g. flake8)
+      # (Optional) Run static code analysis with flake8.
       - name: Run Code Analysis
         run: |
           pip install flake8
           flake8 .
 
-      # (Optional) Run a security scan on your Python code (e.g. using bandit)
+      # (Optional) Run a security scan with bandit.
       - name: Run Security Scan
         run: |
           pip install bandit
           bandit -r .
 
-      # Build your Docker image using Docker Compose
+      # Build your Docker image using Docker Compose.
       - name: Build Docker Image
         run: docker-compose -f docker-compose.yaml build
 
-      # Tag the Docker image
+      # Tag the Docker image.
       - name: Tag Docker Image
         run: docker tag webapp:latest adityakapole/webapp:latest
 
-      # Log in to Docker Hub securely
+      # Log in to Docker Hub securely.
       - name: Docker Login
         run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
 
-      # Push the Docker image to Docker Hub
+      # Push the Docker image.
       - name: Docker Push
         run: docker push adityakapole/webapp:latest
         env:
           DOCKER_CLI_ACI: 1
-
-      # (Optional) Scan the built Docker image for vulnerabilities.
-      # Uncomment the following step if you wish to enable Docker image scanning.
-      # Note: Ensure that the 'docker scan' command is available in your environment.
-      #- name: Docker Image Scan
-      #  run: docker scan adityakapole/webapp:latest || true
